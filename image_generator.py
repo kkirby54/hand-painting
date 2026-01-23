@@ -1,5 +1,8 @@
+import logging
 from google import genai
 from google.genai import types
+
+logger = logging.getLogger(__name__)
 
 class ImageGenerator:
     """Handles interaction with the Google GenAI SDK."""
@@ -7,7 +10,7 @@ class ImageGenerator:
         self.client = genai.Client(api_key=api_key)
 
     def generate(self, prompt: str) -> bytes | None:
-        print(f"Generating image with prompt: {prompt}")
+        logger.info(f"Generating image with prompt: {prompt}")
         try:
             response = self.client.models.generate_content(
                 model='gemini-3-pro-image-preview',
@@ -20,8 +23,8 @@ class ImageGenerator:
                 if part.inline_data:
                     return part.inline_data.data
             
-            print("No image generated.")
+            logger.warning("No image generated")
             return None
         except Exception as e:
-            print(f"Error generating image: {e}")
+            logger.error(f"Error generating image: {e}")
             return None

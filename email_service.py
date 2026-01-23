@@ -1,7 +1,10 @@
+import logging
 import smtplib
 from email.message import EmailMessage
 from PIL import Image
 import io
+
+logger = logging.getLogger(__name__)
 
 class EmailService:
     """Handles sending emails with attachments."""
@@ -10,7 +13,7 @@ class EmailService:
         self.password = password
 
     def send_image(self, recipient: str, image_data: bytes | Image.Image, subject_suffix: str = ""):
-        print(f"Sending email to {recipient}")
+        logger.info(f"Sending email to {recipient}")
         msg = EmailMessage()
         msg['Subject'] = f'Generated Image from Hand Painting{subject_suffix}'
         msg['From'] = self.user
@@ -32,6 +35,6 @@ class EmailService:
             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
                 smtp.login(self.user, self.password)
                 smtp.send_message(msg)
-            print("Email sent successfully!")
+            logger.info("Email sent successfully")
         except Exception as e:
-            print(f"Error sending email: {e}")
+            logger.error(f"Error sending email: {e}")

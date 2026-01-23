@@ -1,6 +1,9 @@
+import logging
 import json
 from pathlib import Path
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class StateManager:
     """Manages the persistence of the job state."""
@@ -14,7 +17,7 @@ class StateManager:
                 with open(self.state_file, 'r') as f:
                     return json.load(f)
             except json.JSONDecodeError:
-                print("Error decoding state file. Starting fresh.")
+                logger.warning("Error decoding state file. Starting fresh")
         return {"last_processed_index": -1, "last_run_date": None}
 
     def save(self, index: int, date_str: str):
@@ -39,6 +42,6 @@ class StateManager:
         next_index = last_index + 1
         
         if next_index >= total_items:
-            print("Reached end of list. Looping back to start.")
+            logger.info("Reached end of list. Looping back to start")
             return 0
         return next_index
